@@ -461,7 +461,6 @@ private struct HashableWrapper<Value>: Hashable {
       } else {
         let cancellable = Box<AnyCancellable?>(wrappedValue: nil)
         try? await withTaskCancellationHandler(
-          handler: { cancellable.wrappedValue?.cancel() },
           operation: {
             try Task.checkCancellation()
             try await withUnsafeThrowingContinuation {
@@ -478,7 +477,8 @@ private struct HashableWrapper<Value>: Hashable {
                   _ = cancellable
                 }
             }
-          }
+          },
+          onCancel: { cancellable.wrappedValue?.cancel() }
         )
       }
     }

@@ -269,7 +269,7 @@ public struct Reducer<State, Action, Environment> {
   /// - Returns: A reducer that works on `GlobalState`, `GlobalAction`, `GlobalEnvironment`.
   public func pullback<GlobalState, GlobalAction, GlobalEnvironment>(
     state toLocalState: WritableKeyPath<GlobalState, State>,
-    action toLocalAction: CasePath<GlobalAction, Action>,
+    action toLocalAction: AnyCasePath<GlobalAction, Action>,
     environment toLocalEnvironment: @escaping (GlobalEnvironment) -> Environment
   ) -> Reducer<GlobalState, GlobalAction, GlobalEnvironment> {
     .init { globalState, globalAction, globalEnvironment in
@@ -453,8 +453,8 @@ public struct Reducer<State, Action, Environment> {
   ///   - toLocalEnvironment: A function that transforms `GlobalEnvironment` into `Environment`.
   /// - Returns: A reducer that works on `GlobalState`, `GlobalAction`, `GlobalEnvironment`.
   public func pullback<GlobalState, GlobalAction, GlobalEnvironment>(
-    state toLocalState: CasePath<GlobalState, State>,
-    action toLocalAction: CasePath<GlobalAction, Action>,
+    state toLocalState: AnyCasePath<GlobalState, State>,
+    action toLocalAction: AnyCasePath<GlobalAction, Action>,
     environment toLocalEnvironment: @escaping (GlobalEnvironment) -> Environment,
     file: StaticString = #fileID,
     line: UInt = #line
@@ -747,7 +747,7 @@ public struct Reducer<State, Action, Environment> {
   /// - Returns: A reducer that works on `GlobalState`, `GlobalAction`, `GlobalEnvironment`.
   public func forEach<GlobalState, GlobalAction, GlobalEnvironment, ID>(
     state toLocalState: WritableKeyPath<GlobalState, IdentifiedArray<ID, State>>,
-    action toLocalAction: CasePath<GlobalAction, (ID, Action)>,
+    action toLocalAction: AnyCasePath<GlobalAction, (ID, Action)>,
     environment toLocalEnvironment: @escaping (GlobalEnvironment) -> Environment,
     file: StaticString = #fileID,
     line: UInt = #line
@@ -820,7 +820,7 @@ public struct Reducer<State, Action, Environment> {
   /// - Returns: A reducer that works on `GlobalState`, `GlobalAction`, `GlobalEnvironment`.
   public func forEach<GlobalState, GlobalAction, GlobalEnvironment, Key>(
     state toLocalState: WritableKeyPath<GlobalState, [Key: State]>,
-    action toLocalAction: CasePath<GlobalAction, (Key, Action)>,
+    action toLocalAction: AnyCasePath<GlobalAction, (Key, Action)>,
     environment toLocalEnvironment: @escaping (GlobalEnvironment) -> Environment,
     file: StaticString = #fileID,
     line: UInt = #line

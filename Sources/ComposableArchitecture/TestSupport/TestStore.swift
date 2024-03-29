@@ -1,5 +1,6 @@
 #if DEBUG
   import Combine
+  import CustomDump
   import Foundation
   import XCTestDynamicOverlay
 
@@ -234,19 +235,19 @@
     }
 
     func completed() {
-//      if !self.receivedActions.isEmpty {
-//        var actions = ""
-//        customDump(self.receivedActions.map(\.action), to: &actions)
-//        XCTFail(
-//          """
-//          The store received \(self.receivedActions.count) unexpected \
-//          action\(self.receivedActions.count == 1 ? "" : "s") after this one: …
-//
-//          Unhandled actions: \(actions)
-//          """,
-//          file: self.file, line: self.line
-//        )
-//      }
+      if !self.receivedActions.isEmpty {
+        var actions = ""
+        customDump(self.receivedActions.map(\.action), to: &actions)
+        XCTFail(
+          """
+          The store received \(self.receivedActions.count) unexpected \
+          action\(self.receivedActions.count == 1 ? "" : "s") after this one: …
+
+          Unhandled actions: \(actions)
+          """,
+          file: self.file, line: self.line
+        )
+      }
       for effect in self.longLivingEffects {
         XCTFail(
           """
@@ -342,19 +343,19 @@
       line: UInt = #line,
       _ update: @escaping (inout LocalState) throws -> Void = { _ in }
     ) {
-//      if !self.receivedActions.isEmpty {
-//        var actions = ""
-//        customDump(self.receivedActions.map(\.action), to: &actions)
-//        XCTFail(
-//          """
-//          Must handle \(self.receivedActions.count) received \
-//          action\(self.receivedActions.count == 1 ? "" : "s") before sending an action: …
-//
-//          Unhandled actions: \(actions)
-//          """,
-//          file: file, line: line
-//        )
-//      }
+      if !self.receivedActions.isEmpty {
+        var actions = ""
+        customDump(self.receivedActions.map(\.action), to: &actions)
+        XCTFail(
+          """
+          Must handle \(self.receivedActions.count) received \
+          action\(self.receivedActions.count == 1 ? "" : "s") before sending an action: …
+
+          Unhandled actions: \(actions)
+          """,
+          file: file, line: line
+        )
+      }
       var expectedState = self.toLocalState(self.snapshotState)
       self.store.send(.init(origin: .send(action), file: file, line: line))
       do {
@@ -379,28 +380,28 @@
       file: StaticString,
       line: UInt
     ) {
-//      if expected != actual {
-//        let difference =
-//          diff(expected, actual, format: .proportional)
-//          .map { "\($0.indent(by: 4))\n\n(Expected: −, Actual: +)" }
-//          ?? """
-//          Expected:
-//          \(String(describing: expected).indent(by: 2))
-//
-//          Actual:
-//          \(String(describing: actual).indent(by: 2))
-//          """
-//
-//        XCTFail(
-//          """
-//          State change does not match expectation: …
-//
-//          \(difference)
-//          """,
-//          file: file,
-//          line: line
-//        )
-//      }
+      if expected != actual {
+        let difference =
+          diff(expected, actual, format: .proportional)
+          .map { "\($0.indent(by: 4))\n\n(Expected: −, Actual: +)" }
+          ?? """
+          Expected:
+          \(String(describing: expected).indent(by: 2))
+
+          Actual:
+          \(String(describing: actual).indent(by: 2))
+          """
+
+        XCTFail(
+          """
+          State change does not match expectation: …
+
+          \(difference)
+          """,
+          file: file,
+          line: line
+        )
+      }
     }
   }
 
@@ -420,28 +421,28 @@
         )
         return
       }
-      let (_, state) = self.receivedActions.removeFirst()
-//      if expectedAction != receivedAction {
-//        let difference =
-//          diff(expectedAction, receivedAction, format: .proportional)
-//          .map { "\($0.indent(by: 4))\n\n(Expected: −, Received: +)" }
-//          ?? """
-//          Expected:
-//          \(String(describing: expectedAction).indent(by: 2))
-//
-//          Received:
-//          \(String(describing: receivedAction).indent(by: 2))
-//          """
-//
-//        XCTFail(
-//          """
-//          Received unexpected action: …
-//
-//          \(difference)
-//          """,
-//          file: file, line: line
-//        )
-//      }
+      let (receivedAction, state) = self.receivedActions.removeFirst()
+      if expectedAction != receivedAction {
+        let difference =
+          diff(expectedAction, receivedAction, format: .proportional)
+          .map { "\($0.indent(by: 4))\n\n(Expected: −, Received: +)" }
+          ?? """
+          Expected:
+          \(String(describing: expectedAction).indent(by: 2))
+
+          Received:
+          \(String(describing: receivedAction).indent(by: 2))
+          """
+
+        XCTFail(
+          """
+          Received unexpected action: …
+
+          \(difference)
+          """,
+          file: file, line: line
+        )
+      }
       var expectedState = self.toLocalState(self.snapshotState)
       do {
         try update(&expectedState)

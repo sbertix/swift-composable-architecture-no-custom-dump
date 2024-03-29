@@ -121,19 +121,19 @@ extension Reducer {
           self.receive(expectedAction, file: step.file, line: step.line, update)
 
         case let .environment(work):
-//          if !self.receivedActions.isEmpty {
-//            var actions = ""
-//            customDump(self.receivedActions.map(\.action), to: &actions)
-//            XCTFail(
-//              """
-//              Must handle \(self.receivedActions.count) received \
-//              action\(self.receivedActions.count == 1 ? "" : "s") before performing this work: …
-//
-//              Unhandled actions: \(actions)
-//              """,
-//              file: step.file, line: step.line
-//            )
-//          }
+          if !self.receivedActions.isEmpty {
+            var actions = ""
+            customDump(self.receivedActions.map(\.action), to: &actions)
+            XCTFail(
+              """
+              Must handle \(self.receivedActions.count) received \
+              action\(self.receivedActions.count == 1 ? "" : "s") before performing this work: …
+
+              Unhandled actions: \(actions)
+              """,
+              file: step.file, line: step.line
+            )
+          }
           do {
             try work(&self.environment)
           } catch {
@@ -141,19 +141,19 @@ extension Reducer {
           }
 
         case let .do(work):
-//          if !receivedActions.isEmpty {
-//            var actions = ""
-//            customDump(self.receivedActions.map(\.action), to: &actions)
-//            XCTFail(
-//              """
-//              Must handle \(self.receivedActions.count) received \
-//              action\(self.receivedActions.count == 1 ? "" : "s") before performing this work: …
-//
-//              Unhandled actions: \(actions)
-//              """,
-//              file: step.file, line: step.line
-//            )
-//          }
+          if !receivedActions.isEmpty {
+            var actions = ""
+            customDump(self.receivedActions.map(\.action), to: &actions)
+            XCTFail(
+              """
+              Must handle \(self.receivedActions.count) received \
+              action\(self.receivedActions.count == 1 ? "" : "s") before performing this work: …
+
+              Unhandled actions: \(actions)
+              """,
+              file: step.file, line: step.line
+            )
+          }
           do {
             try work()
           } catch {

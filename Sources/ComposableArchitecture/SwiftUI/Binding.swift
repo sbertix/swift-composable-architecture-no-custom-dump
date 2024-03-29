@@ -1,3 +1,4 @@
+import CustomDump
 import SwiftUI
 
 // NB: `BindableAction` can produce crashes in Xcode 12.4 (Swift 5.3) and earlier due to an enum
@@ -228,11 +229,11 @@ import SwiftUI
     }
   }
 
-//  extension BindableState: CustomDumpRepresentable {
-//    public var customDumpValue: Any {
-//      self.wrappedValue
-//    }
-//  }
+  extension BindableState: CustomDumpRepresentable {
+    public var customDumpValue: Any {
+      self.wrappedValue
+    }
+  }
 
   extension BindableState: CustomDebugStringConvertible where Value: CustomDebugStringConvertible {
     public var debugDescription: String {
@@ -481,17 +482,17 @@ extension BindingAction {
   }
 }
 
-//extension BindingAction: CustomDumpReflectable {
-//  public var customDumpMirror: Mirror {
-//    .init(
-//      self,
-//      children: [
-//        "set": (self.keyPath, self.value)
-//      ],
-//      displayStyle: .enum
-//    )
-//  }
-//}
+extension BindingAction: CustomDumpReflectable {
+  public var customDumpMirror: Mirror {
+    .init(
+      self,
+      children: [
+        "set": (self.keyPath, self.value)
+      ],
+      displayStyle: .enum
+    )
+  }
+}
 
 #if compiler(>=5.4)
   extension Reducer where Action: BindableAction, State == Action.State {
